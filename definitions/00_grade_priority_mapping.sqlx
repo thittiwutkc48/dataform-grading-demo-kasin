@@ -1,0 +1,62 @@
+config {
+    type: "view", // Creates a view in BigQuery. Try changing to "table" instead.
+    schema: "dataform_staging",
+    columns: {
+        test: "A description for the test column", // Column descriptions are pushed to BigQuery.
+    }
+}
+
+  -- The rest of a SQLX file contains your SELECT statement used to create the table.
+SELECT
+  10 AS priority,
+  "P" AS grade_level,
+  "V" AS card_type,
+  "Black VIP" AS name
+UNION ALL
+SELECT
+  20,
+  "P",
+  "A",
+  "Black A"
+UNION ALL
+SELECT
+  30,
+  "P",
+  "B",
+  "Black B"
+UNION ALL
+SELECT
+  40,
+  "P",
+  "P",
+  "Black C"
+UNION ALL
+SELECT
+  50,
+  "P",
+  "Y",
+  "Black D"
+UNION ALL
+SELECT
+  60,
+  "G",
+  "G",
+  "Red"
+UNION ALL
+SELECT
+  70,
+  "O",
+  "O",
+  "Green"
+UNION ALL
+SELECT
+  80,
+  "Y",
+  "Y",
+  "Blue"
+UNION ALL
+SELECT
+  90,
+  "W",
+  "W",
+  "White"

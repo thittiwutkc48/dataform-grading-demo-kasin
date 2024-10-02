@@ -1,0 +1,22 @@
+config {
+    type: "view",
+    schema: "dataform_staging",
+    dependencies: "02_grade_infos"
+}
+
+SELECT
+  recd_seqn,
+  citizen_id,
+  citizen_type,
+  card_type,
+  grade_level,
+  grade_month,
+  customer_type,
+  grade_end,
+  filtering_rule,
+  MD5(CONCAT(recd_seqn,citizen_id,card_type,grade_level)) AS uuid,
+  flag
+FROM
+  dataform_staging.03_staging_check_status
+WHERE
+  flag = "Upgrade"

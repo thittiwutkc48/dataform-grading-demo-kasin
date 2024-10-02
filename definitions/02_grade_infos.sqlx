@@ -1,0 +1,67 @@
+config {
+    type: "incremental", // Creates a view in BigQuery. Try changing to "table" instead.
+    columns: {
+        test: "A description for the test column", // Column descriptions are pushed to BigQuery.
+    },
+    uniqueKey: ["citizen_id"],
+    bigquery: {
+        clusterBy: ["citizen_id"]
+    }
+}
+
+SELECT
+  recd_seqn,
+  citizen_id,
+  citizen_type,
+  card_type,
+  grade_level,
+  grade_month,
+  customer_type,
+  grade_end,
+  filtering_rule,
+FROM
+  ${ref("01_pre_grade_result")}
+
+pre_operations {
+  CREATE OR REPLACE TABLE
+    dataform_staging.03_staging_check_status AS
+  SELECT
+    t1.recd_seqn,
+    t1.citizen_id,
+    t1.citizen_type,
+    t1.card_type,
+    t1.grade_level,
+    t1.grade_month,
+    t1.customer_type,
+    t1.grade_end,
+    t1.filtering_rule,
+    t2.citizen_id AS citizen_id_2,
+    t3.priority AS new_status_priority,
+    t4.priority AS old_status_priority,
+    --current_timestamp AS ts,
+  IF
+    (t2.citizen_id IS NULL, "New",
+      CASE
+        WHEN t3.priority=t4.priority THEN "Retain"
+        WHEN t3.priority<t4.priority THEN "Upgrade"
+        WHEN t3.priority>t4.priority THEN "Downgrade"
+        ELSE "Error"
+    END
+      ) AS flag
+  FROM
+    ${ref("01_pre_grade_result")} t1
+  LEFT JOIN
+    ${self()} t2
+  ON
+    t1.citizen_id = t2.citizen_id
+  LEFT JOIN
+    ${ref("00_grade_priority_mapping")} t3
+  ON
+    t3.grade_level = t1.grade_level
+    AND t3.card_type = t1.card_type
+  LEFT JOIN
+    ${ref("00_grade_priority_mapping")} t4
+  ON
+    t4.grade_level = t2.grade_level
+    AND t4.card_type = t2.card_type
+}

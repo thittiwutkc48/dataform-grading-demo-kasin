@@ -1,0 +1,26 @@
+config {
+    type: "incremental",
+    uniqueKey: ["uuid"]
+}
+
+SELECT
+  *
+FROM
+  ${ref("02_0_new")}
+UNION ALL
+SELECT
+  *
+FROM
+  ${ref("02_1_upgrade")}
+UNION ALL
+SELECT
+  *
+FROM
+  ${ref("02_2_retain")}
+UNION ALL
+SELECT
+  *
+FROM
+  ${ref("02_3_downgrade")}
+ORDER BY
+  citizen_id

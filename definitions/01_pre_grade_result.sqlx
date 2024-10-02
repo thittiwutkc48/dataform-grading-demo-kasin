@@ -1,0 +1,6 @@
+    config {
+      type: "declaration",
+      database: <specify project id>,
+      schema: "dataform",
+      name: "01_pre_grade_result",
+    }

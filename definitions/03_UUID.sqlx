@@ -1,0 +1,25 @@
+config {
+    type: "incremental",
+    uniqueKey: ["uuid"]
+}
+
+SELECT
+  uuid,
+  citizen_id,
+  flag
+FROM
+  ${ref("02_0_new")}
+UNION ALL
+SELECT
+  uuid,
+  citizen_id,
+  flag
+FROM
+  ${ref("02_1_upgrade")}
+UNION ALL
+SELECT
+  uuid,
+  citizen_id,
+  flag
+FROM
+  ${ref("02_3_downgrade")}
